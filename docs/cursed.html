@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cursed programs</title>
+        <link rel="stylesheet" href="page.css">
+        <link rel="stylesheet" href="hljs.css">
+        <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js"></script>
+        <script type="module" src="hljs.js"></script>
+        <script type="module" src="cursed.js"></script>
+        <style>
+h2{
+    font-size: larger;
+    margin-bottom: 0;
+}
+div.controls{
+    display: flex;
+    gap: 10px;
+}
+div.code{
+    overflow: auto;
+    height: min(30lh,60vh);
+}
+        </style>
+    </head>
+    <body>
+        <h1>Cursed program collection</h1>
+        <p>This is a collection of the more cursed programs I have written (Yes, I wrote all of them by hand).</p>
+        <p><strong>Note: I will eventually add detailed explanations for all these snippets. Stay tuned!</strong></p>
+        <ol>
+<li>
+    <h2><img src="pylogo.webp" alt="icon for Python" title="Python" class="icon"> Statically typed Python. Wait...</h2>
+    <div class="code"><code class="block python">from operator import attrgetter
+from inspect import getsource
+class UndefinedVariable:
+    cls: type
+    def __init__(self,name):
+        self.name = name
+        self._cargv = None
+    def __call__(self,*argv):
+        if self._cargv is not None:
+            raise SyntaxError("Invalid syntax: unexpected initializer")
+        self._cargv = argv
+        return self
+    @property
+    def cargv(self):
+        return [] if self._cargv is None else self._cargv
+class Value:
+    _protected__type: Type
+    def __init__(self,type: Type,inst):
+        self._protected__type = type
+        self._protected__value = inst
+    def _protected__wrap(self,thing):
+        return Value(Type(type(thing),self._protected__type.env),thing)
+    def __call__(self,*a: Value):
+        return self._protected__wrap(self._protected__value(*map(attrgetter("_protected__value"),a)))
+    def __getattr__(self,attr: str):
+        return self._protected__wrap(getattr(self._protected__value,attr))
+    def _protected__assign(self,other):
+        if (ass := getattr(self._protected__value,"__assign__",None)) is not None:
+            self._protected__do_assign(ass(other))
+        else:
+            self._protected__do_assign(other)
+    def _protected__do_assign(self,val):
+        if isinstance(val,self._protected__type.cls):
+            self._protected__value = val
+        else:
+            raise TypeError(f"Cannot assign {type(val).__name__} instance to a variable of type {self._protected__type.cls.__name__}")
+class Type:
+    def __init__(self,cls,env: StaticallyTypedEnv):
+        self.cls = cls
+        self.env = env
+    def __matmul__(self,expr):
+        if type(expr) == UndefinedVariable:
+            self.env.define(expr.name,self,self.cls(*expr.cargv))
+        else:
+            raise SyntaxError(f"Error: duplicate definition")
+class StaticallyTypedEnv(dict):
+    BuiltinFnType = object()
+    vars: dict[str,Value]
+    types: dict[str,Type]
+    def __init__(self):
+        self.vars = {}
+        self.types = {
+            "int": Type(int,self),
+            "any": Type(object,self)
+        }
+    def define(self,name: str,type_: Type,cargv):
+        if name in self.vars:
+            raise SyntaxError(f"Internal error: shouldn't reach here")
+        self.vars[name] = Value(type_,cargv)
+    def __setitem__(self,item: str,value):
+        if item in self.vars:
+            self.vars[item]._protected__assign(value)
+        elif isinstance(value,type):
+            self.types[item] = Type(value,self)
+        else:
+            raise SyntaxError(f"Cannot assign to nonexistent variable {item}")
+    def __getitem__(self,var: str):
+        if (v := self.vars.get(var)):
+            return v
+        elif (v := self.types.get(var)):
+            return v
+        elif (v := getattr(__builtins__,var,None)) is not None:
+            return Value(Type(object,self),v)
+        else:
+            return UndefinedVariable(var)
+
+def main():
+    class Container:
+        def __init__(self,item = None):
+            self.item = item
+            if item is None:
+                print("Default init")
+        def __assign__(self,new):
+            print("Assigned to!")
+            self.item = new
+            return self
+        def extract(self):
+            return self.item
+    
+    Container@ dfl_init;
+    
+    Container@ cont("Hello, world!");
+    print(cont.extract());
+    cont = "Goodbye, world!";
+    print(cont.extract());
+
+exec(getsource(main).replace("def main():","if True:",1),{},StaticallyTypedEnv())
+</code></div>
+</li>
+<li>
+    <h2><img src="jslogo.webp" alt="icon for JavaScript" title="JavaScript" class="icon"> undefined</h2>
+    <div class="code"><code class="block js">"use strict";
+(() => {
+    function undefined(undefined){
+        if(undefined[undefined.undefined[undefined]] === (undefined=>undefined)()){
+            if(undefined.undefined.undefined.undefined === (undefined=>undefined)()){
+                undefined.undefined.undefined.undefined = undefined.undefined;
+                undefined = undefined.undefined.undefined;
+                undefined.undefined.undefined = (undefined=>undefined)();
+                delete undefined.undefined;
+                return undefined[undefined];
+            }else if(undefined.undefined.undefined.undefined.undefined === (undefined=>undefined)()){
+                undefined.undefined.undefined.undefined.undefined = undefined.undefined.undefined;
+                undefined = undefined.undefined.undefined.undefined;
+                undefined.undefined.undefined = (undefined=>undefined)();
+                delete undefined.undefined;
+                return undefined[undefined];
+            }else{
+                undefined = {undefined: undefined};
+                undefined[undefined] = undefined.undefined;
+                undefined.undefined = {
+                    undefined: undefined[undefined].undefined.undefined.undefined
+                };
+                undefined.undefined[undefined] = undefined[undefined].undefined[undefined];
+                delete undefined[undefined];
+                return undefined.undefined[undefined](undefined);
+            }
+        }else{
+            if(undefined.undefined.undefined === (undefined=>undefined)()){
+                undefined.undefined.undefined = {
+                    undefined: (undefined=>undefined)()
+                };
+                undefined.undefined.undefined[undefined] = undefined[undefined.undefined[undefined]];
+            }else if(undefined.undefined.undefined.undefined === (undefined=>undefined)()){
+                undefined.undefined.undefined.undefined = {
+                    undefined: (undefined=>undefined)()
+                };
+                undefined.undefined.undefined.undefined[undefined] = undefined[undefined.undefined[undefined]];
+            }else{
+                undefined = {undefined: undefined};
+                undefined[undefined] = undefined.undefined;
+                undefined.undefined = {
+                    undefined: undefined[undefined].undefined.undefined.undefined
+                };
+                undefined.undefined[undefined] = undefined[undefined].undefined[undefined];
+                undefined[undefined.undefined[undefined]] = undefined[undefined][undefined.undefined[undefined]];
+                delete undefined[undefined];
+                undefined.undefined[undefined](undefined);
+            }
+        }
+    }
+    undefined[undefined] = {
+        undefined: {
+            undefined: (undefined=>undefined)()
+        }
+    };
+    undefined[undefined].undefined[undefined[undefined]] = undefined;
+    undefined[undefined][undefined] = 1;
+    undefined(undefined[undefined]);
+    undefined[undefined][undefined] = 2;
+    undefined(undefined[undefined]);
+    undefined[undefined][undefined] = 3;
+    undefined(undefined[undefined]);
+    undefined[undefined][undefined] = (undefined=>undefined)();
+    console.log(undefined(undefined[undefined]));
+    console.log(undefined(undefined[undefined]));
+    console.log(undefined(undefined[undefined]));
+})();</code></div>
+</li>
+<li>
+    <h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> cpp with cpp</h2>
+    <div class="code"><code class="block cpp">#include&lt;utility&gt;
+#include&lt;tuple&gt;
+template&lt;auto f,typename ...T&gt;
+class capture_t{
+    std::tuple&lt;T...&gt; mem;
+    public:
+        capture_t(T&amp;&amp; ...v) : mem(std::forward&lt;T&gt;(v)...){}
+        template&lt;typename ...A&gt;
+        decltype(auto) operator()(A&amp;&amp; ...a) const{
+            constexpr auto [...ind] = std::make_index_sequence&lt;sizeof...(T)&gt;{};
+            return f(std::get&lt;ind&gt;(mem)...,std::forward&lt;A&gt;(a)...);
+        }
+};
+template&lt;auto f,typename ...T&gt;
+capture_t&lt;f,T...&gt; capture(T&amp;&amp; ...v){
+    return {std::forward&lt;T&gt;(v)...};
+}
+
+#define COMMA ,
+#define MOVE(x) (x,)
+#define COPY(x) (,x)
+#define REF(x) (,,x)
+#define THESE(...) __VA_ARGS__
+#define DEPARENTHESIZE(...) THESE __VA_ARGS__
+
+#define NOTHING
+#define IF(lhs,...) __VA_OPT__(lhs)
+#define IFNT(lhs,...) IF(lhs,NOTH ## __VA_OPT__(ING))
+
+#define IFCOPY(lhs,mhs,rhs,...) IF(IFNT(lhs,mhs),rhs) IF(IFNT((rhs __VA_OPT__(,) __VA_ARGS__),mhs),rhs)
+#define IFREF(lhs,mhs,rhs,...) IFNT(IFNT(lhs,mhs),rhs) IFNT(IFNT((__VA_ARGS__),mhs),rhs)
+#define IFMOVE(lhs,mhs,...) IF(lhs,mhs) IF((mhs __VA_OPT__(,) __VA_ARGS__),mhs)
+
+#define AUTO_CONST_REF(name) const auto&amp; name
+#define AUTO_REF(name) auto&amp; name
+#define DECAY_COPY(name) auto(name)
+#define USE(name) name
+#define MOVE_ARG(name) std::move(name)
+
+#define MCALL(lhs,...) lhs(__VA_ARGS__)
+
+#define PARAM(...) MCALL(IFCOPY,AUTO_CONST_REF,DEPARENTHESIZE(__VA_ARGS__)) MCALL(IFREF,AUTO_REF,DEPARENTHESIZE(__VA_ARGS__)) MCALL(IFMOVE,AUTO_CONST_REF,DEPARENTHESIZE(__VA_ARGS__))
+#define ARGUM(...) MCALL(IFCOPY,DECAY_COPY,DEPARENTHESIZE(__VA_ARGS__)) MCALL(IFREF,USE,DEPARENTHESIZE(__VA_ARGS__)) MCALL(IFMOVE,MOVE_ARG,DEPARENTHESIZE(__VA_ARGS__))
+
+#define CPPP_APPEND_SPACE(...) __VA_ARGS__ NOTHING
+#define CPPP_PARSE_THIS_1(...) THESE(THESE(__VA_ARGS__))
+#define CPPP_PARSE_THIS_2(...) CPPP_PARSE_THIS_1(CPPP_PARSE_THIS_1(__VA_ARGS__))
+#define CPPP_PARSE_THIS_4(...) CPPP_PARSE_THIS_2(CPPP_PARSE_THIS_2(__VA_ARGS__))
+#define CPPP_PARSE_THIS_8(...) CPPP_PARSE_THIS_4(CPPP_PARSE_THIS_4(__VA_ARGS__))
+#define CPPP_PARSE_THIS_16(...) CPPP_PARSE_THIS_8(CPPP_PARSE_THIS_8(__VA_ARGS__))
+#define CPPP_PARSE_THIS_32(...) CPPP_PARSE_THIS_16(CPPP_PARSE_THIS_16(__VA_ARGS__))
+#define CPPP_PARSE_THIS_64(...) CPPP_PARSE_THIS_32(CPPP_PARSE_THIS_32(__VA_ARGS__))
+#define CPPP_PARSE_THIS_128(...) CPPP_PARSE_THIS_64(CPPP_PARSE_THIS_64(__VA_ARGS__))
+#define CPPP_PARSE_THIS(...) CPPP_PARSE_THIS_128(CPPP_PARSE_THIS_128(__VA_ARGS__))
+
+#define CPPP_name_FOR_EACH_() CPPP_FOR_EACH_
+#define CPPP_FOR_EACH_(fn,u,...) fn(u) __VA_OPT__(,CPPP_APPEND_SPACE(CPPP_name_FOR_EACH_)()(fn,__VA_ARGS__))
+#define CPPP_FOR_EACH(fn,...) CPPP_PARSE_THIS(CPPP_FOR_EACH_(fn,__VA_ARGS__))
+
+#define CAPTURE(capv,argv,body) capture&lt;[](CPPP_FOR_EACH(PARAM,capv)IF(IF(COMMA,argv),capv)argv)static body&gt;(CPPP_FOR_EACH(ARGUM,capv))
+
+#include&lt;functional&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;memory&gt;
+
+using namespace std::literals;
+
+int main(){
+    int b = 2;
+    std::move_only_function&lt;void(int)&gt; mof;
+    {
+        std::unique_ptr&lt;std::string&gt; text{new std::string(&quot;Hello, world! I&#39;m making this text kinda long to prevent SSO from eliminating the allocation. BTW, I&#39;m inside a moved unique_ptr.&quot;sv)};
+         std::string text2{&quot;Hello, world 2! I&#39;m making this text kinda long, again, to prevent SSO from eliminating the allocation. This time we&#39;re copied inside, however.&quot;sv};
+        mof = CAPTURE(THESE(MOVE(text),REF(b),COPY(text2)),THESE(int x),{ std::cout &lt;&lt; *text &lt;&lt; &#39;\n&#39; &lt;&lt; text2 &lt;&lt; std::endl; b *= x; });
+        text2.clear();
+    }
+    mof(3);
+    std::cout &lt;&lt; b &lt;&lt; std::endl;
+    return 0;
+}</code></div>
+</li>
+<li>
+    <h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> Functional, but at what cost</h2>
+    <div class="code"><code class="block cpp">namespace cppp{
+    template&lt;typename T,typename U&gt;
+    struct copy_const{
+        using type = U;
+    };
+    template&lt;typename T,typename U&gt;
+    struct copy_const&lt;const T,U&gt;{
+        using type = const U;
+    };
+    template&lt;typename T,typename U&gt;
+    using copy_const_t = copy_const&lt;T,U&gt;::type;
+    template&lt;typename T,typename Else&gt;
+    struct coalesce_void_type{
+        using type = T;
+    };
+    template&lt;typename Else&gt;
+    struct coalesce_void_type&lt;void,Else&gt;{
+        using type = Else;
+    };
+    template&lt;typename T,typename Else&gt;
+    using coalesce_void_type_t = coalesce_void_type&lt;T,Else&gt;::type;
+}
+
+#include&lt;functional&gt;
+#include&lt;concepts&gt;
+#include&lt;utility&gt;
+#include&lt;tuple&gt;
+namespace cppp{
+    template&lt;typename T,typename ...A&gt;
+    concept stateless_functor = requires(A&amp;&amp;... a){
+        static_cast&lt;const T&amp;&gt;(T{})(std::forward&lt;A&gt;(a)...);
+    };
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor&lt;T,A...&gt;)
+    constexpr inline bool stateless_nothrow_invocable = noexcept(static_cast&lt;const T&amp;&gt;(T{})(std::declval&lt;A&amp;&amp;&gt;()...));
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor&lt;T,A...&gt;)
+    using stateless_invoke_result = decltype(static_cast&lt;const T&amp;&gt;(T{})(std::declval&lt;A&amp;&amp;&gt;()...));
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor&lt;T,A...&gt;)
+    constexpr decltype(auto) invoke_stateless(A&amp;&amp; ...a) noexcept(stateless_nothrow_invocable&lt;T,A...&gt;){
+        return static_cast&lt;const T&amp;&gt;(T{})(std::forward&lt;A&gt;(a)...);
+    }
+    namespace detail{
+        template&lt;typename T,typename ...A&gt;
+        constexpr stateless_invoke_result&lt;T,A...&gt;(&amp;refer_to_stateless_functor())(A...) noexcept{
+            if constexpr(requires{
+                {T::operator()} -&gt; std::convertible_to&lt;stateless_invoke_result&lt;T,A...&gt;(&amp;)(A...)&gt;;
+            }){
+                return T::operator();
+            }else{
+                return *[](A... a) static noexcept(stateless_nothrow_invocable&lt;T,A...&gt;) -&gt; stateless_invoke_result&lt;T,A...&gt;{
+                    return invoke_stateless&lt;T&gt;(static_cast&lt;A&amp;&amp;&gt;(a)...);
+                };
+            }
+        }
+    }
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor&lt;T,A...&gt;)
+    constexpr stateless_invoke_result&lt;T,A...&gt;(&amp;reference_to_stateless_functor)(A...) = detail::refer_to_stateless_functor&lt;T,A...&gt;();
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor&lt;T,A...&gt;)
+    constexpr stateless_invoke_result&lt;T,A...&gt;(&amp;argument_forwarding_reference_to_stateless_functor)(A&amp;&amp;...) = *[](A&amp;&amp; ...a) static noexcept(stateless_nothrow_invocable&lt;T,A...&gt;) -&gt; stateless_invoke_result&lt;T,A...&gt;{
+        return invoke_stateless&lt;T&gt;(std::forward&lt;A&gt;(a)...);
+    };
+    namespace detail{
+        template&lt;typename T&gt;
+        using clref_if_none = std::conditional_t&lt;std::is_reference_v&lt;T&gt;,T,const T&amp;&gt;;
+        template&lt;typename F,typename T&gt;
+        struct unary_specify_or_deduce_parameters_functor{
+            constexpr static decltype(auto) operator()(clref_if_none&lt;T&gt;&amp;&amp; val) noexcept(stateless_nothrow_invocable&lt;F,clref_if_none&lt;T&gt;&gt;){
+                return invoke_stateless&lt;F&gt;(std::forward&lt;clref_if_none&lt;T&gt;&gt;(val));
+            }
+        };
+        template&lt;typename F&gt;
+        struct unary_specify_or_deduce_parameters_functor&lt;F,void&gt;{
+            template&lt;typename T&gt;
+            constexpr static decltype(auto) operator()(T&amp;&amp; val) noexcept(stateless_nothrow_invocable&lt;F,T&gt;){
+                return invoke_stateless&lt;F&gt;(std::forward&lt;T&gt;(val));
+            }
+        };
+        template&lt;typename F,typename T,typename U&gt;
+        struct binary_specify_or_deduce_parameters_functor{
+            constexpr static decltype(auto) operator()(clref_if_none&lt;T&gt;&amp;&amp; lhs,clref_if_none&lt;U&gt;&amp;&amp; rhs) noexcept(stateless_nothrow_invocable&lt;F,T,U&gt;){
+                return invoke_stateless&lt;F&gt;(std::forward&lt;clref_if_none&lt;T&gt;&gt;(lhs),std::forward&lt;clref_if_none&lt;U&gt;&gt;(rhs));
+            }
+        };
+        template&lt;typename F,typename U&gt;
+        struct binary_specify_or_deduce_parameters_functor&lt;F,void,U&gt;{
+            template&lt;typename T&gt;
+            constexpr static decltype(auto) operator()(T&amp;&amp; lhs,clref_if_none&lt;U&gt; rhs) noexcept(stateless_nothrow_invocable&lt;F,T,clref_if_none&lt;U&gt;&gt;){
+                return invoke_stateless&lt;F&gt;(std::forward&lt;T&gt;(lhs),std::forward&lt;clref_if_none&lt;U&gt;&gt;(rhs));
+            }
+        };
+        template&lt;typename F,typename T&gt;
+        struct binary_specify_or_deduce_parameters_functor&lt;F,T,void&gt;{
+            template&lt;typename U&gt;
+            constexpr static decltype(auto) operator()(clref_if_none&lt;T&gt; lhs,U&amp;&amp; rhs) noexcept(stateless_nothrow_invocable&lt;F,clref_if_none&lt;T&gt;,U&gt;){
+                return invoke_stateless&lt;F&gt;(std::forward&lt;clref_if_none&lt;T&gt;&gt;(lhs),std::forward&lt;U&gt;(rhs));
+            }
+        };
+        template&lt;typename F&gt;
+        struct binary_specify_or_deduce_parameters_functor&lt;F,void,void&gt;{
+            template&lt;typename T,typename U&gt;
+            constexpr static decltype(auto) operator()(T&amp;&amp; lhs,U&amp;&amp; rhs) noexcept(stateless_nothrow_invocable&lt;F,T,U&gt;){
+                return invoke_stateless&lt;F&gt;(std::forward&lt;T&gt;(lhs),std::forward&lt;U&gt;(rhs));
+            }
+        };
+    }
+    template&lt;typename T=void,typename U=T&gt;
+    using plus = detail::binary_specify_or_deduce_parameters_functor&lt;std::plus&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using minus = detail::binary_specify_or_deduce_parameters_functor&lt;std::minus&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using multiplies = detail::binary_specify_or_deduce_parameters_functor&lt;std::multiplies&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using divides = detail::binary_specify_or_deduce_parameters_functor&lt;std::divides&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using modulus = detail::binary_specify_or_deduce_parameters_functor&lt;std::modulus&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void&gt;
+    using negate = detail::unary_specify_or_deduce_parameters_functor&lt;std::negate&lt;void&gt;,T&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using equal_to = detail::binary_specify_or_deduce_parameters_functor&lt;std::equal_to&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using not_equal_to = detail::binary_specify_or_deduce_parameters_functor&lt;std::not_equal_to&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using greater = detail::binary_specify_or_deduce_parameters_functor&lt;decltype([]&lt;typename P,typename Q&gt;(P&amp;&amp; lhs,Q&amp;&amp; rhs)static noexcept(noexcept(std::forward&lt;P&gt;(lhs) &gt; std::forward&lt;Q&gt;(rhs))) -&gt; decltype(auto) {return std::forward&lt;P&gt;(lhs) &gt; std::forward&lt;Q&gt;(rhs);}),T,U&gt;;
+    // applies the total ordering for pointers
+    template&lt;typename T=void,typename U=T&gt;
+    using std_greater = detail::binary_specify_or_deduce_parameters_functor&lt;std::greater&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using less = detail::binary_specify_or_deduce_parameters_functor&lt;decltype([]&lt;typename P,typename Q&gt;(P&amp;&amp; lhs,Q&amp;&amp; rhs)static noexcept(noexcept(std::forward&lt;P&gt;(lhs) &lt; std::forward&lt;Q&gt;(rhs))) -&gt; decltype(auto) {return std::forward&lt;P&gt;(lhs) &lt; std::forward&lt;Q&gt;(rhs);}),T,U&gt;;
+    // applies the total ordering for pointers
+    template&lt;typename T=void,typename U=T&gt;
+    using std_less = detail::binary_specify_or_deduce_parameters_functor&lt;std::less&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using greater_equal = detail::binary_specify_or_deduce_parameters_functor&lt;decltype([]&lt;typename P,typename Q&gt;(P&amp;&amp; lhs,Q&amp;&amp; rhs)static noexcept(noexcept(std::forward&lt;P&gt;(lhs) &gt;= std::forward&lt;Q&gt;(rhs))) -&gt; decltype(auto) {return std::forward&lt;P&gt;(lhs) &gt;= std::forward&lt;Q&gt;(rhs);}),T,U&gt;;
+    // applies the total ordering for pointers
+    template&lt;typename T=void,typename U=T&gt;
+    using std_greater_equal = detail::binary_specify_or_deduce_parameters_functor&lt;std::greater_equal&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using less_equal = detail::binary_specify_or_deduce_parameters_functor&lt;decltype([]&lt;typename P,typename Q&gt;(P&amp;&amp; lhs,Q&amp;&amp; rhs)static noexcept(noexcept(std::forward&lt;P&gt;(lhs) &lt;= std::forward&lt;Q&gt;(rhs))) -&gt; decltype(auto) {return std::forward&lt;P&gt;(lhs) &lt;= std::forward&lt;Q&gt;(rhs);}),T,U&gt;;
+    // applies the total ordering for pointers
+    template&lt;typename T=void,typename U=T&gt;
+    using std_less_equal = detail::binary_specify_or_deduce_parameters_functor&lt;std::less_equal&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using logical_and = detail::binary_specify_or_deduce_parameters_functor&lt;std::logical_and&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void&gt;
+    using logical_not = detail::unary_specify_or_deduce_parameters_functor&lt;std::logical_not&lt;void&gt;,T&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using logical_or = detail::binary_specify_or_deduce_parameters_functor&lt;std::logical_or&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using bit_and = detail::binary_specify_or_deduce_parameters_functor&lt;std::bit_and&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using bit_or = detail::binary_specify_or_deduce_parameters_functor&lt;std::bit_or&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void,typename U=T&gt;
+    using bit_xor = detail::binary_specify_or_deduce_parameters_functor&lt;std::bit_xor&lt;void&gt;,T,U&gt;;
+    template&lt;typename T=void&gt;
+    using bit_not = detail::unary_specify_or_deduce_parameters_functor&lt;std::bit_not&lt;void&gt;,T&gt;;
+    
+    template&lt;typename T=void&gt;
+    using dereferences = detail::unary_specify_or_deduce_parameters_functor&lt;decltype([]&lt;typename P&gt;(P&amp;&amp; val)static noexcept(noexcept(*std::forward&lt;P&gt;(val))) -&gt; decltype(auto) {return *std::forward&lt;P&gt;(val);}),T&gt;;
+    template&lt;typename T=void&gt;
+    using addresses = detail::unary_specify_or_deduce_parameters_functor&lt;decltype([]&lt;typename P&gt;(P&amp;&amp; val)static noexcept(noexcept(&amp;std::forward&lt;P&gt;(val))) -&gt; decltype(auto) {return &amp;std::forward&lt;P&gt;(val);}),T&gt;;
+    
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor&lt;T,A...&gt;)
+    struct with_parameters{
+        constexpr static decltype(auto) operator()(A&amp;&amp;... a) noexcept(stateless_nothrow_invocable&lt;T,A...&gt;){
+            return invoke_stateless&lt;T&gt;(std::forward&lt;A&gt;(a)...);
+        }
+    };
+    namespace detail{
+        #if __cpp_trivial_union &gt;= 202603L
+        #warning we got trivial unions, just use the one from &lt;uninitialized&gt;
+        #endif
+        template&lt;typename T&gt;
+        struct constexpr_uninitialized{
+            union{
+                T member;
+            };
+            constexpr constexpr_uninitialized() noexcept{}
+            constexpr ~constexpr_uninitialized() noexcept{}
+        };
+    }
+    template&lt;typename T,typename ...A&gt;
+    concept requires_temporary_storage_when_called_with = !std::is_void_v&lt;typename T::template temporary_storage_type&lt;A...&gt;&gt;;
+    template&lt;typename T,typename ...A&gt;
+    struct temporary_storage_type_of{
+        using type = void;
+    };
+    template&lt;typename T,typename ...A&gt; requires(requires_temporary_storage_when_called_with&lt;T,A...&gt;)
+    struct temporary_storage_type_of&lt;T,A...&gt;{
+        using type = T::template temporary_storage_type&lt;A...&gt;;
+    };
+    template&lt;typename T,typename ...A&gt;
+    using temporary_storage_type_of_t = temporary_storage_type_of&lt;T,A...&gt;::type;
+    template&lt;typename T,typename ...A&gt;
+    concept stateless_functor_with_possible_temporary_storage = (requires_temporary_storage_when_called_with&lt;T,A...&gt; ? stateless_functor&lt;T,temporary_storage_type_of_t&lt;T,A...&gt;,A...&gt; : stateless_functor&lt;T,A...&gt;);
+    namespace detail{
+        template&lt;typename T,typename ...A&gt;
+        constexpr bool stateless_nothrow_invocable_with_possible_temporary_storage() noexcept{
+            if constexpr(requires_temporary_storage_when_called_with&lt;T,A...&gt;){
+                return stateless_nothrow_invocable&lt;T,temporary_storage_type_of_t&lt;T,A...&gt;,A...&gt;;
+            }else{
+                return stateless_nothrow_invocable&lt;T,A...&gt;;
+            }
+        }
+    }
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor_with_possible_temporary_storage&lt;T,A...&gt;)
+    constexpr inline bool stateless_nothrow_invocable_with_possible_temporary_storage = detail::stateless_nothrow_invocable_with_possible_temporary_storage&lt;T,A...&gt;();
+    namespace detail{
+        template&lt;typename T,typename ...A&gt; requires(stateless_functor_with_possible_temporary_storage&lt;T,A...&gt;)
+        struct stateless_invoke_with_possible_temporary_storage_result{
+            using type = stateless_invoke_result&lt;T,A...&gt;;
+        };
+        template&lt;typename T,typename ...A&gt; requires(stateless_functor_with_possible_temporary_storage&lt;T,A...&gt; &amp;&amp; requires_temporary_storage_when_called_with&lt;T,A...&gt;)
+        struct stateless_invoke_with_possible_temporary_storage_result&lt;T,A...&gt;{
+            using type = stateless_invoke_result&lt;T,temporary_storage_type_of_t&lt;T,A...&gt;,A...&gt;;
+        };
+    }
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor_with_possible_temporary_storage&lt;T,A...&gt;)
+    using stateless_invoke_with_possible_temporary_storage_result = detail::stateless_invoke_with_possible_temporary_storage_result&lt;T,A...&gt;::type;
+    template&lt;typename T,typename ...A&gt; requires(stateless_functor_with_possible_temporary_storage&lt;T,A...&gt;)
+    constexpr decltype(auto) invoke_stateless_with_temporary_storage(coalesce_void_type_t&lt;temporary_storage_type_of_t&lt;T,A...&gt;,std::monostate&gt;&amp;&amp; strg,A&amp;&amp; ...a) noexcept(stateless_nothrow_invocable_with_possible_temporary_storage&lt;T,A...&gt;){
+        if constexpr(requires_temporary_storage_when_called_with&lt;T,A...&gt;){
+            return invoke_stateless&lt;T&gt;(std::move(strg),std::forward&lt;A&gt;(a)...);
+        }else{
+            static_cast&lt;void&gt;(strg);
+            return invoke_stateless&lt;T&gt;(std::forward&lt;A&gt;(a)...);
+        }
+    }
+    namespace detail{
+        template&lt;typename T&gt;
+        using store_if_nonreference = std::conditional_t&lt;std::is_reference_v&lt;T&gt;,std::monostate,constexpr_uninitialized&lt;T&gt;&gt;;
+        template&lt;typename ...T&gt;
+        struct tuple_or_stateless{
+            using type = std::tuple&lt;T...&gt;;
+        };
+        template&lt;std::same_as&lt;std::monostate&gt; ...T&gt;
+        struct tuple_or_stateless&lt;T...&gt;{
+            using type = void;
+        };
+        template&lt;typename ...T&gt;
+        using tuple_or_stateless_t = tuple_or_stateless&lt;T...&gt;::type;
+    }
+    template&lt;typename T,typename U&gt;
+    struct atop{
+        template&lt;typename ...A&gt;
+        using temporary_storage_type = detail::tuple_or_stateless_t&lt;
+            coalesce_void_type_t&lt;temporary_storage_type_of_t&lt;T,stateless_invoke_with_possible_temporary_storage_result&lt;U,A...&gt;&gt;,std::monostate&gt;,
+            coalesce_void_type_t&lt;temporary_storage_type_of_t&lt;U,A...&gt;,std::monostate&gt;,
+            detail::store_if_nonreference&lt;stateless_invoke_with_possible_temporary_storage_result&lt;U,A...&gt;&gt;
+        &gt;;
+        template&lt;typename ...A&gt; requires(
+            stateless_functor_with_possible_temporary_storage&lt;U,A...&gt;
+            &amp;&amp; stateless_functor_with_possible_temporary_storage&lt;T,stateless_invoke_with_possible_temporary_storage_result&lt;U,A...&gt;&gt;
+            &amp;&amp; !std::same_as&lt;temporary_storage_type&lt;A...&gt;,void&gt;
+        )
+        constexpr static decltype(auto) operator()(temporary_storage_type&lt;A...&gt;&amp;&amp; strg,A&amp;&amp; ...a) noexcept(stateless_nothrow_invocable_with_possible_temporary_storage&lt;U,A...&gt; &amp;&amp; stateless_nothrow_invocable_with_possible_temporary_storage&lt;T,stateless_invoke_with_possible_temporary_storage_result&lt;U,A...&gt;&gt;){
+            if constexpr(std::is_reference_v&lt;stateless_invoke_with_possible_temporary_storage_result&lt;U,A...&gt;&gt;){
+                return invoke_stateless_with_temporary_storage&lt;T&gt;(std::get&lt;0uz&gt;(std::move(strg)),invoke_stateless_with_temporary_storage&lt;U&gt;(std::get&lt;1uz&gt;(std::move(strg)),std::forward&lt;A&gt;(a)...));
+            }else{
+                stateless_invoke_with_possible_temporary_storage_result&lt;U,A...&gt;&amp; intermediate = *::new(&amp;std::get&lt;2uz&gt;(strg).member) stateless_invoke_with_possible_temporary_storage_result&lt;U,A...&gt;(invoke_stateless_with_temporary_storage&lt;U&gt;(std::get&lt;1uz&gt;(std::move(strg)),std::forward&lt;A&gt;(a)...));
+                try{
+                    return invoke_stateless_with_temporary_storage&lt;T&gt;(std::get&lt;0uz&gt;(std::move(strg)),std::move(intermediate));
+                }catch(...){
+                    std::destroy_at(&amp;intermediate);
+                    // GCC erroneously warns about a rethrow statement calling terminate even if the try-block is in fact noexcept
+                    #pragma GCC diagnostic push
+                    #pragma GCC diagnostic ignored &quot;-Wterminate&quot;
+                    throw;
+                    #pragma GCC diagnostic pop
+                }
+            }
+        }
+        template&lt;typename ...A&gt; requires(stateless_functor&lt;U,A...&gt; &amp;&amp; stateless_functor&lt;T,stateless_invoke_result&lt;U,A...&gt;&gt; &amp;&amp; std::same_as&lt;temporary_storage_type&lt;A...&gt;,void&gt;)
+        constexpr static decltype(auto) operator()(A&amp;&amp; ...a) noexcept(stateless_nothrow_invocable&lt;U,A...&gt; &amp;&amp; stateless_nothrow_invocable&lt;T,stateless_invoke_result&lt;U,A...&gt;&gt;){
+            return invoke_stateless&lt;T&gt;(invoke_stateless&lt;U&gt;(std::forward&lt;A&gt;(a)...));
+        }
+    };
+    template&lt;typename T&gt;
+    struct close_temporary_scope{
+        template&lt;typename ...A&gt; requires(stateless_functor_with_possible_temporary_storage&lt;T,A...&gt;)
+        constexpr static decltype(auto) operator()(A&amp;&amp; ...a) noexcept(stateless_nothrow_invocable_with_possible_temporary_storage&lt;T,A...&gt;){
+            return invoke_stateless_with_temporary_storage&lt;T&gt;({},std::forward&lt;A&gt;(a)...);
+        }
+    };
+}
+
+#include&lt;meta&gt;
+namespace cppp{
+    template&lt;std::meta::info field&gt; requires(is_nonstatic_data_member(field))
+    struct accesses{
+        private:
+            using parameter_type = [:parent_of(field):];
+            using result_type = [:type_of(field):];
+        public:
+            constexpr static result_type&amp; operator()(parameter_type&amp; obj) noexcept{
+                return obj.[:field:];
+            }
+            constexpr static const result_type&amp; operator()(const parameter_type&amp; obj) noexcept{
+                return obj.[:field:];
+            }
+    };
+    template&lt;std::meta::info field&gt; requires(is_nonstatic_data_member(field))
+    struct forwarding_accesses{
+        private:
+            using parameter_type = [:parent_of(field):];
+            using result_type = [:type_of(field):];
+        public:
+            constexpr static result_type&amp; operator()(parameter_type&amp; obj) noexcept{
+                return obj.[:field:];
+            }
+            constexpr static const result_type&amp; operator()(const parameter_type&amp; obj) noexcept{
+                return obj.[:field:];
+            }
+            constexpr static result_type&amp;&amp; operator()(parameter_type&amp;&amp; obj) noexcept{
+                return std::move(obj.[:field:]);
+            }
+            constexpr static const result_type&amp;&amp; operator()(const parameter_type&amp;&amp; obj) noexcept{
+                return std::move(obj.[:field:]);
+            }
+    };
+    template&lt;std::meta::info method&gt; requires(is_class_member(method) &amp;&amp; is_function(method) &amp;&amp; !is_special_member_function(method))
+    struct invokes_member{
+        private:
+            using object_type = [:parent_of(method):];
+        public:
+            template&lt;typename ...A&gt;
+            constexpr static decltype(auto) operator()(object_type&amp; obj,A&amp;&amp; ...a) noexcept(noexcept(obj.[:method:](std::forward&lt;A&gt;(a)...))){
+                return obj.[:method:](std::forward&lt;A&gt;(a)...);
+            }
+            template&lt;typename ...A&gt;
+            constexpr static decltype(auto) operator()(const object_type&amp; obj,A&amp;&amp; ...a) noexcept(noexcept(obj.[:method:](std::forward&lt;A&gt;(a)...))){
+                return obj.[:method:](std::forward&lt;A&gt;(a)...);
+            }
+            template&lt;typename ...A&gt;
+            constexpr static decltype(auto) operator()(object_type&amp;&amp; obj,A&amp;&amp; ...a) noexcept(noexcept(std::move(obj).[:method:](std::forward&lt;A&gt;(a)...))){
+                return std::move(obj).[:method:](std::forward&lt;A&gt;(a)...);
+            }
+            template&lt;typename ...A&gt;
+            constexpr static decltype(auto) operator()(const object_type&amp;&amp; obj,A&amp;&amp; ...a) noexcept(noexcept(std::move(obj).[:method:](std::forward&lt;A&gt;(a)...))){
+                return std::move(obj).[:method:](std::forward&lt;A&gt;(a)...);
+            }
+    };
+}
+
+namespace cppp{
+    template&lt;auto&amp; Fref&gt; requires(std::is_function_v&lt;std::remove_reference_t&lt;decltype(Fref)&gt;&gt;)
+    class static_functor{
+        using fptr_t = std::remove_reference_t&lt;decltype(Fref)&gt;*;
+        public:
+            consteval operator fptr_t() const noexcept{
+                return &amp;Fref;
+            }
+    };
+}
+
+
+struct foo{
+    int x;
+    constexpr int twice_x() const noexcept{
+        return x * 2;
+    }
+};
+struct bar{
+    foo field;
+};
+bar getbar() noexcept{
+    return {.field{.x = 4}};
+}
+int main(){
+    return cppp::invoke_stateless&lt;cppp::minus&lt;int,void&gt;&gt;(8,cppp::atop&lt;cppp::invokes_member&lt;^^foo::twice_x&gt;,cppp::atop&lt;cppp::accesses&lt;^^bar::field&gt;,cppp::static_functor&lt;getbar&gt;&gt;&gt;{}({}));
+}</code></div>
+</li>
+        </ol>
+    </body>
+</html>

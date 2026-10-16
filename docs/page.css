@@ -1,0 +1,9 @@
+code{
+    display: block;
+    white-space: pre;
+}
+img.icon{
+    height: 0.8lh;
+    margin-top: 0.1lh;
+    vertical-align: top;
+}

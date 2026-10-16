@@ -1,0 +1,51 @@
+html{
+    color-scheme: light dark;
+}
+.hljs-keyword{
+    font-weight: bold;
+    color: light-dark(#7a9e0c,#91ba16);
+}
+.hljs-title{
+    &.function_{
+        color: light-dark(#c1a30d,goldenrod);
+    }
+    &.class_{
+        color: #78a5ff;
+    }
+}
+.hljs-built_in{
+    color: #2dcea3;
+}
+.hljs-string{
+    color: #ff6958;
+}
+.hljs-selector-class{
+    color: orange;
+}
+.hljs-selector-id{
+    color: #00b500;
+}
+.hljs-selector-attr{
+    color: #c1c1ff;
+}
+.hljs-attribute{
+    color: #fd6c6c;
+}
+.hljs-number{
+    color: #e751e7;
+}
+.hljs-type{
+    color: #14a614;
+}
+.hljs-comment{
+    color: #339c3c;
+}
+.hljs-literal{
+    color: #ff3a3a;
+}
+.hljs-meta{
+    color: light-dark(blue,#00ffff);
+}
+.hljs-property, .hljs-attr, .hljs-params{
+    color: light-dark(#02187f,lightblue);
+}
