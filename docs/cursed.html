@@ -18,7 +18,9 @@ div.controls{
 }
 div.code{
     overflow: auto;
-    height: min(30lh,60vh);
+    
+    max-width: 60vw;
+    height: calc(min(30lh,60vh) - 0.5lh); /* cut off last line so the user knows it's scrollable */
 }
         </style>
     </head>
