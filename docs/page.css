@@ -1,6 +1,11 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 code{
     display: block;
-    white-space: pre;
+    white-space: pre-wrap;
 }
 img.icon{
     height: 0.8lh;

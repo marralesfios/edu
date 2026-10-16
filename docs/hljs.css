@@ -7,17 +7,17 @@ html{
 }
 .hljs-title{
     &.function_{
-        color: light-dark(#c1a30d,goldenrod);
+        color: light-dark(#ba9d0b,goldenrod);
     }
     &.class_{
-        color: #78a5ff;
+        color: light-dark(#5f88d9,#78a5ff);
     }
 }
 .hljs-built_in{
-    color: #2dcea3;
+    color: light-dark(#1cad86,#2dcea3);
 }
 .hljs-string{
-    color: #ff6958;
+    color: light-dark(red,#ff6958);
 }
 .hljs-selector-class{
     color: orange;
@@ -48,4 +48,9 @@ html{
 }
 .hljs-property, .hljs-attr, .hljs-params{
     color: light-dark(#02187f,lightblue);
+}
+.hljs-ln-n{
+    text-align: right;
+    padding-right: 1ch;
+    color: grey;
 }
