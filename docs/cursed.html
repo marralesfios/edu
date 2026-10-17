@@ -18,9 +18,9 @@ div.controls{
     gap: 10px;
 }
 ol{
-    max-width: 60vw;
+    max-width: 160ch;
 }
-@media (max-width: 100ch){
+@media (max-width: 170ch){
     ol{
         max-width: 95vw;
         list-style-position: inside;
@@ -30,8 +30,15 @@ ol{
         display: inline;
     }
 }
-div.code{
+p{
+    margin: 0.2lh;
+}
+code{
     overflow-y: auto;
+    
+    &.unscrollable{
+        overflow-y: hidden;
+    }
     
     height: calc(min(30lh,60vh) - 0.5lh); /* cut off last line so the user knows it's scrollable */
 }
@@ -41,6 +48,7 @@ div.code{
         <h1>Cursed program collection</h1>
         <p>This is a collection of the more cursed programs I have written (Yes, I wrote all of them by hand).</p>
         <p><strong>Note: I will eventually add detailed explanations for all these snippets. Stay tuned!</strong></p>
+        <p>Tip: on this page, hold shift while scrolling to always scroll the entire page instead of a code block.</p>
         <ol>
 <li><h2><img src="pylogo.webp" alt="icon for Python" title="Python" class="icon"> Statically typed Python. Wait...</h2>
     <div class="code"><code class="block python">from operator import attrgetter
@@ -140,10 +148,8 @@ def main():
     print(cont.extract());
 
 exec(getsource(main).replace("def main():","if True:",1),{},StaticallyTypedEnv())
-</code></div>
-</li>
-<li>
-    <h2><img src="jslogo.webp" alt="icon for JavaScript" title="JavaScript" class="icon"> undefined</h2>
+</code></div></li>
+<li><h2><img src="jslogo.webp" alt="icon for JavaScript" title="JavaScript" class="icon"> undefined</h2>
     <div class="code"><code class="block js">"use strict";
 (() => {
     function undefined(undefined){
@@ -210,10 +216,8 @@ exec(getsource(main).replace("def main():","if True:",1),{},StaticallyTypedEnv()
     console.log(undefined(undefined[undefined]));
     console.log(undefined(undefined[undefined]));
     console.log(undefined(undefined[undefined]));
-})();</code></div>
-</li>
-<li>
-    <h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> cpp with cpp</h2>
+})();</code></div></li>
+<li><h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> cpp with cpp</h2>
     <div class="code"><code class="block cpp">#include&lt;utility&gt;
 #include&lt;tuple&gt;
 template&lt;auto f,typename ...T&gt;
@@ -294,10 +298,8 @@ int main(){
     mof(3);
     std::cout &lt;&lt; b &lt;&lt; std::endl;
     return 0;
-}</code></div>
-</li>
-<li>
-    <h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> Functional, but at what cost</h2>
+}</code></div></li>
+<li><h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> Functional, but at what cost</h2>
     <div class="code"><code class="block cpp">namespace cppp{
     template&lt;typename T,typename U&gt;
     struct copy_const{
@@ -666,8 +668,7 @@ bar getbar() noexcept{
 }
 int main(){
     return cppp::invoke_stateless&lt;cppp::minus&lt;int,void&gt;&gt;(8,cppp::atop&lt;cppp::invokes_member&lt;^^foo::twice_x&gt;,cppp::atop&lt;cppp::accesses&lt;^^bar::field&gt;,cppp::static_functor&lt;getbar&gt;&gt;&gt;{}({}));
-}</code></div>
-</li>
+}</code></div></li>
         </ol>
     </body>
 </html>
