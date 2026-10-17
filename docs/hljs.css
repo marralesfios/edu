@@ -54,3 +54,6 @@ html{
     padding-right: 1ch;
     color: grey;
 }
+td.hljs-ln-numbers{
+    vertical-align: top;
+}

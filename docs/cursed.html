@@ -17,10 +17,22 @@ div.controls{
     display: flex;
     gap: 10px;
 }
-div.code{
-    overflow: clip auto;
-    
+ol{
     max-width: 60vw;
+}
+@media (max-width: 100ch){
+    ol{
+        max-width: 95vw;
+        list-style-position: inside;
+        padding-left: 0;
+    }
+    h2{
+        display: inline;
+    }
+}
+div.code{
+    overflow-y: auto;
+    
     height: calc(min(30lh,60vh) - 0.5lh); /* cut off last line so the user knows it's scrollable */
 }
         </style>
@@ -30,8 +42,7 @@ div.code{
         <p>This is a collection of the more cursed programs I have written (Yes, I wrote all of them by hand).</p>
         <p><strong>Note: I will eventually add detailed explanations for all these snippets. Stay tuned!</strong></p>
         <ol>
-<li>
-    <h2><img src="pylogo.webp" alt="icon for Python" title="Python" class="icon"> Statically typed Python. Wait...</h2>
+<li><h2><img src="pylogo.webp" alt="icon for Python" title="Python" class="icon"> Statically typed Python. Wait...</h2>
     <div class="code"><code class="block python">from operator import attrgetter
 from inspect import getsource
 class UndefinedVariable:
