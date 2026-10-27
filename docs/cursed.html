@@ -50,7 +50,7 @@ code{
         <p><strong>Note: I will eventually add detailed explanations for all these snippets. Stay tuned!</strong></p>
         <p>Tip: on this page, hold shift while scrolling to always scroll the entire page instead of a code block.</p>
         <ol>
-<li><h2><img src="pylogo.webp" alt="icon for Python" title="Python" class="icon"> Statically typed Python. Wait...</h2>
+<li id="static-py"><h2><img src="pylogo.webp" alt="icon for Python" title="Python" class="icon"> Statically typed Python. Wait...</h2>
     <div class="code"><code class="block python">from operator import attrgetter
 from inspect import getsource
 class UndefinedVariable:
@@ -149,7 +149,7 @@ def main():
 
 exec(getsource(main).replace("def main():","if True:",1),{},StaticallyTypedEnv())
 </code></div></li>
-<li><h2><img src="jslogo.webp" alt="icon for JavaScript" title="JavaScript" class="icon"> undefined</h2>
+<li id="undefined"><h2><img src="jslogo.webp" alt="icon for JavaScript" title="JavaScript" class="icon"> undefined</h2>
     <div class="code"><code class="block js">"use strict";
 (() => {
     function undefined(undefined){
@@ -217,7 +217,7 @@ exec(getsource(main).replace("def main():","if True:",1),{},StaticallyTypedEnv()
     console.log(undefined(undefined[undefined]));
     console.log(undefined(undefined[undefined]));
 })();</code></div></li>
-<li><h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> cpp with cpp</h2>
+<li id="lambda-macro"><h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> cpp with cpp</h2>
     <div class="code"><code class="block cpp">#include&lt;utility&gt;
 #include&lt;tuple&gt;
 template&lt;auto f,typename ...T&gt;
@@ -299,7 +299,7 @@ int main(){
     std::cout &lt;&lt; b &lt;&lt; std::endl;
     return 0;
 }</code></div></li>
-<li><h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> Functional, but at what cost</h2>
+<li id="functional-cpp"><h2><img src="cpplogo.webp" alt="icon for C++" title="C++" class="icon"> Functional, but at what cost</h2>
     <div class="code"><code class="block cpp">namespace cppp{
     template&lt;typename T,typename U&gt;
     struct copy_const{
