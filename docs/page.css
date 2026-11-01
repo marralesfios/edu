@@ -2,13 +2,18 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: min(max(55vw, 100ch), 95vw);
+    margin: 0 auto;
 }
 code{
-    display: block;
     white-space: pre-wrap;
 }
 img.icon{
     height: 0.8lh;
     margin-top: 0.1lh;
     vertical-align: top;
+}
+span.details{
+    text-decoration: 1px dotted underline;
+    cursor: help;
 }

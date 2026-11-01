@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Programming fun facts</title>
+        <link rel="stylesheet" href="page.css">
+    </head>
+    <body>
+        <h1>Programming fun facts</h1>
+        <ol>
+<li>In C++, <code>unstoppable_token</code> is a refinement of <code>stoppable_token</code>. That is, all unstoppable tokens are stoppable tokens.</li>
+<li>Python used to hash all NaNs to 0, but because NaNs are not equal to each other, you can have multiple NaNs as dictionary keys. This caused guaranteed hash collisions until it was <a href="https://github.com/python/cpython/issues/87641" title="bpo 4347 in the Python bug tracker">fixed in Python 3.10</a>.</li>
+<li>While in C++, <code>++3</code> is not valid, you can use <code>++const_cast&lt;int&amp;&gt;(static_cast&lt;const int&amp;&gt;(static_cast&lt;int&amp;&amp;&gt;(3)))</code> to achieve the effect of creating a temporary <code>int</code> of value 3 and incrementing it. Yes, this is not undefined behavior (though it would be if you remove the innermost cast).</li>
+<li>In C++, <code>export</code> is a fully reserved keyword but <code>import</code> is only a contextual keyword (i.e. can be used as an identifier).</li>
+<li>APL's <span class="details" title="generalization of prefix sum; in other words, fold/reduce but keep all intermediate results">scan</span> operator has quadratic runtime because it scans increasingly long <em>prefixes</em> of the array while doing each reduction step right-to-left. (in other words, <code>f\a b c</code> returns <code>a</code> then <code>a f b</code> then <code>a f (b f c)</code>, which cannot be optimized when <code>f</code> cannot be proven to be either commutative or associative)</li>
+        </ol>
+    </body>
+</html>
